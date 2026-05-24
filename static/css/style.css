@@ -1,0 +1,50 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+}
+
+.navbar {
+    background: #dc3545;
+}
+
+.hero {
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    height: 90vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+}
+
+.hero h1 {
+    color: white;
+    font-size: 60px;
+}
+
+.hero p {
+    color: white;
+    font-size: 22px;
+}
+
+.card {
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.btn {
+    border-radius: 30px;
+}
+
+.dashboard-card {
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 10px gray;
+}
