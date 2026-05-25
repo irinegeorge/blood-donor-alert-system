@@ -1,50 +1,67 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
+body{
+    font-family:'Poppins', sans-serif;
+    background:#f5f7fb;
 }
 
-.navbar {
-    background: #dc3545;
+.navbar{
+    background:#b30000;
+    padding:15px;
 }
 
-.hero {
-    background: linear-gradient(to right, #ff416c, #ff4b2b);
-    height: 90vh;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    text-align: center;
+.navbar-brand{
+    font-size:24px;
 }
 
-.hero h1 {
-    color: white;
-    font-size: 60px;
+.nav-link{
+    color:white !important;
+    margin-left:15px;
 }
 
-.hero p {
-    color: white;
-    font-size: 22px;
+.hero-section{
+    background:white;
+    padding:80px 40px;
+    border-radius:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
 }
 
-.card {
-    border-radius: 15px;
-    transition: 0.3s;
+.info-card{
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    margin-top:20px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    transition:0.3s;
 }
 
-.card:hover {
-    transform: scale(1.05);
+.info-card:hover{
+    transform:translateY(-5px);
 }
 
-.btn {
-    border-radius: 30px;
+.form-container{
+    max-width:500px;
+    margin:auto;
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
 }
 
-.dashboard-card {
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0px 0px 10px gray;
+.form-control{
+    height:50px;
+    border-radius:10px;
+}
+
+.btn-danger{
+    background:#b30000;
+    border:none;
+    height:50px;
+    border-radius:10px;
+    font-weight:600;
+}
+
+.table{
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
 }

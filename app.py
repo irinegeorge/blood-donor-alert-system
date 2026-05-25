@@ -1,67 +1,58 @@
-from flask import Flask, render_template, request, redirect, session
 import pymysql
+
+from flask import Flask, render_template, request, redirect, session
+
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 
-app.secret_key = 'blooddonor'
+app.secret_key = "blooddonorsecret"
 
-# MYSQL CONNECTION
-connection = pymysql.connect(
-    host='localhost',
-    user='root',
-    password='irine4131',
-    database='blooddonor'
-)
+bcrypt = Bcrypt(app)
 
-# HOME PAGE
+def get_db_connection():
+
+    return pymysql.connect(
+        host='localhost',
+        user='bloodadmin',
+        password='blood123',
+        database='blood_donor_alert'
+    )
+
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# REGISTER PAGE
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET','POST'])
 def register():
 
     if request.method == 'POST':
 
         name = request.form['name']
+        blood = request.form['blood']
+        location = request.form['location']
+        phone = request.form['phone']
         email = request.form['email']
         password = request.form['password']
-        blood_group = request.form['blood_group']
-        city = request.form['city']
-        phone = request.form['phone']
-        availability = request.form['availability']
 
-        cursor = connection.cursor()
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-        sql = """
-        INSERT INTO users
-        (name, email, password, blood_group, city, phone, availability)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """
+        connection = get_db_connection()
+        cur = connection.cursor()
 
-        values = (
-            name,
-            email,
-            password,
-            blood_group,
-            city,
-            phone,
-            availability
-        )
-
-        cursor.execute(sql, values)
+        cur.execute("""
+        INSERT INTO users(name,blood_group,location,phone,email,password)
+        VALUES(%s,%s,%s,%s,%s,%s)
+        """,(name,blood,location,phone,email,hashed_password))
 
         connection.commit()
-
-        cursor.close()
+        connection.close()
 
         return redirect('/login')
 
     return render_template('register.html')
 
-# LOGIN PAGE
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET','POST'])
 def login():
 
     if request.method == 'POST':
@@ -69,135 +60,110 @@ def login():
         email = request.form['email']
         password = request.form['password']
 
-        cursor = connection.cursor()
+        connection = get_db_connection()
+        cur = connection.cursor()
 
-        sql = """
-        SELECT * FROM users
-        WHERE email=%s AND password=%s
-        """
+        cur.execute("SELECT * FROM users WHERE email=%s",(email,))
 
-        values = (email, password)
+        user = cur.fetchone()
 
-        cursor.execute(sql, values)
-
-        user = cursor.fetchone()
-
-        cursor.close()
+        connection.close()
 
         if user:
-            session['user'] = email
-            return redirect('/dashboard')
 
-        else:
-            return 'Invalid Email or Password'
+            if bcrypt.check_password_hash(user[6], password):
+
+                session['user'] = user[1]
+
+                return redirect('/dashboard')
+
+        return "Invalid Login"
 
     return render_template('login.html')
 
-# DASHBOARD
+
 @app.route('/dashboard')
 def dashboard():
 
-    if 'user' in session:
-        return render_template('dashboard.html')
+    connection = get_db_connection()
 
-    return redirect('/login')
+    cur = connection.cursor()
 
-# BLOOD REQUEST PAGE
-@app.route('/request', methods=['GET', 'POST'])
-def request_blood():
+    cur.execute("SELECT * FROM users")
 
-    if request.method == 'POST':
+    donors = cur.fetchall()
 
-        patient_name = request.form['patient_name']
-        blood_group = request.form['blood_group']
-        hospital = request.form['hospital']
-        city = request.form['city']
-        contact = request.form['contact']
-        urgency = request.form['urgency']
+    cur.execute("SELECT COUNT(*) FROM users")
 
-        cursor = connection.cursor()
+    total_donors = cur.fetchone()[0]
 
-        sql = """
-        INSERT INTO emergency_request
-        (patient_name, blood_group, hospital, city, contact, urgency)
-        VALUES (%s, %s, %s, %s, %s, %s)
-        """
+    cur.execute("SELECT COUNT(*) FROM emergency_requests")
 
-        values = (
-            patient_name,
-            blood_group,
-            hospital,
-            city,
-            contact,
-            urgency
-        )
+    total_requests = cur.fetchone()[0]
 
-        cursor.execute(sql, values)
+    connection.close()
 
-        connection.commit()
+    return render_template(
+        'dashboard.html',
+        donors=donors,
+        total_donors=total_donors,
+        total_requests=total_requests
+    )
 
-        cursor.close()
-
-        return '''
-        <script>
-            alert("Blood Request Submitted Successfully");
-            window.location="/dashboard";
-        </script>
-        '''
-
-    return render_template('request.html')
-
-# SEARCH DONOR
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/search', methods=['GET','POST'])
 def search():
 
     donors = []
 
     if request.method == 'POST':
 
-        blood_group = request.form['blood_group']
+        blood = request.form['blood']
 
-        cursor = connection.cursor()
+        connection = get_db_connection()
 
-        sql = "SELECT * FROM users WHERE blood_group=%s"
+        cur = connection.cursor()
 
-        cursor.execute(sql, (blood_group,))
+        cur.execute("SELECT * FROM users WHERE blood_group=%s",(blood,))
 
-        donors = cursor.fetchall()
+        donors = cur.fetchall()
 
-        cursor.close()
+        connection.close()
 
     return render_template('search.html', donors=donors)
 
+@app.route('/emergency', methods=['GET','POST'])
+def emergency():
 
-# ADMIN PANEL
-@app.route('/admin')
-def admin():
+    if request.method == 'POST':
 
-    cursor = connection.cursor()
+        patient = request.form['patient']
+        hospital = request.form['hospital']
+        blood = request.form['blood']
+        contact = request.form['contact']
 
-    cursor.execute("SELECT * FROM users")
-    users = cursor.fetchall()
+        connection = get_db_connection()
 
-    cursor.execute("SELECT * FROM emergency_request")
-    requests = cursor.fetchall()
+        cur = connection.cursor()
 
-    cursor.close()
+        cur.execute("""
+        INSERT INTO emergency_requests(patient_name,hospital,blood_group,contact)
+        VALUES(%s,%s,%s,%s)
+        """, (patient, hospital, blood, contact))
 
-    return render_template(
-        'admin.html',
-        users=users,
-        requests=requests
-    )
+        connection.commit()
 
+        connection.close()
+
+        return "Emergency Request Submitted Successfully"
+
+    return render_template('emergency.html')
 
 @app.route('/logout')
 def logout():
 
-    session.pop('user', None)
+    session.clear()
 
-    return redirect('/login')
+    return redirect('/')
 
-# RUN APPLICATION
 if __name__ == '__main__':
     app.run(debug=True)
