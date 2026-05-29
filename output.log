@@ -1,0 +1,35 @@
+nohup: ignoring input
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.1.207:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 754-807-231
+202.141.103.239 - - [29/May/2026 12:56:54] "GET /search HTTP/1.1" 200 -
+202.141.103.239 - - [29/May/2026 12:56:55] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+202.141.103.239 - - [29/May/2026 12:56:59] "GET /dashboard HTTP/1.1" 200 -
+202.141.103.239 - - [29/May/2026 12:56:59] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+202.141.103.239 - - [29/May/2026 12:57:02] "GET / HTTP/1.1" 200 -
+202.141.103.239 - - [29/May/2026 12:57:02] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+202.141.103.239 - - [29/May/2026 12:57:03] "GET /register HTTP/1.1" 200 -
+202.141.103.239 - - [29/May/2026 12:57:04] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+202.141.103.239 - - [29/May/2026 12:57:05] "GET /login HTTP/1.1" 200 -
+202.141.103.239 - - [29/May/2026 12:57:05] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+202.141.103.239 - - [29/May/2026 12:57:06] "GET /search HTTP/1.1" 200 -
+202.141.103.239 - - [29/May/2026 12:57:06] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+202.141.103.239 - - [29/May/2026 12:57:07] "GET /emergency HTTP/1.1" 200 -
+202.141.103.239 - - [29/May/2026 12:57:07] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+202.141.103.239 - - [29/May/2026 12:57:08] "GET /dashboard HTTP/1.1" 200 -
+202.141.103.239 - - [29/May/2026 12:57:08] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+ * Detected change in '/home/ubuntu/blood-donor-alert-system/app.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 754-807-231
+ * Detected change in '/home/ubuntu/blood-donor-alert-system/app.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 754-807-231

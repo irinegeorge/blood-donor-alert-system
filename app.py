@@ -1,23 +1,26 @@
 import pymysql
-
+import os
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, session
 
 from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
-
-app.secret_key = "blooddonorsecret"
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SECURE'] = False
+load_dotenv()
+app.secret_key = os.getenv("SECRET_KEY")
 
 bcrypt = Bcrypt(app)
 
 def get_db_connection():
 
     return pymysql.connect(
-        host='localhost',
-        user='bloodadmin',
-        password='blood123',
-        database='blood_donor_alert'
-    )
+    host=os.getenv("DB_HOST"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    database=os.getenv("DB_NAME")
+)
 
 @app.route('/')
 def home():
@@ -166,4 +169,4 @@ def logout():
     return redirect('/')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
