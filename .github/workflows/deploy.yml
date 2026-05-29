@@ -1,29 +1,30 @@
 name: Deploy Flask App to EC2
 
 on:
-push:
-branches:
-- main
+  push:
+    branches:
+      - main
 
 jobs:
-deploy:
-runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
 
-```
-steps:
-- name: Deploy to EC2
-  uses: appleboy/ssh-action@master
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
 
-  with:
-    host: ${{ secrets.EC2_HOST }}
-    username: ${{ secrets.EC2_USER }}
-    key: ${{ secrets.EC2_SSH_KEY }}
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
 
-    script: |
-      cd ~/blood-donor-alert-system
-      git pull origin main
-      source venv/bin/activate
-      pip install -r requirements.txt
-      pkill -f app.py || true
-      nohup python3 app.py > output.log 2>&1 &
-```
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+
+          script: |
+            cd ~/blood-donor-alert-system
+            git pull origin main
+            sudo docker build -t lifelink-app .
+            sudo docker stop lifelink-container || true
+            sudo docker rm lifelink-container || true
+            sudo docker run -d -p 5000:5000 --name lifelink-container lifelink-app
